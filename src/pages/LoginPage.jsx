@@ -50,7 +50,7 @@ function LoginPage({ onLogin }) {
         </div>
 
         <h1>Welcome back</h1>
-        <p className="auth-subtitle">Log in to check import duties and review trade documents.</p>
+        <p className="auth-subtitle">Log in to discuss your queries.</p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
@@ -91,12 +91,6 @@ function LoginPage({ onLogin }) {
             Login to dashboard
           </button>
         </form>
-
-        <div className="demo-box">
-          <strong>Demo credentials</strong>
-          <span>Email: business@tariff.ai</span>
-          <span>Password: password123</span>
-        </div>
 
         <p className="login-footer">
           Need an account? <Link to="/">Go back home</Link>
