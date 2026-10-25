@@ -6,19 +6,13 @@ npm install
 npm run dev
 ```
 
-To stop the server - In the terminal where `npm run dev` is running, press **`Ctrl + C`**.
-
-
-```bash
-npm install
-npm run dev
-```
-
 Then open the local URL shown in terminal (usually `http://localhost:5173`).
 
 - `dev` → starts Vite dev server  
 - `build` → production build  
 - `preview` → preview built app  
+
+NOTE: To stop the server - In the terminal where `npm run dev` is running, press **`Ctrl + C`**.
 
 For production preview:
 
