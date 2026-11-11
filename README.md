@@ -1,4 +1,5 @@
 # How to Build and Run
+
 To run the project in development mode, run following commands from root directory:
 
 ```bash
@@ -8,9 +9,9 @@ npm run dev
 
 Then open the local URL shown in terminal (usually `http://localhost:5173`).
 
-- `dev` → starts Vite dev server  
-- `build` → production build  
-- `preview` → preview built app  
+- `dev` → starts Vite dev server
+- `build` → production build
+- `preview` → preview built app
 
 NOTE: To stop the server - In the terminal where `npm run dev` is running, press **`Ctrl + C`**.
 
@@ -22,6 +23,12 @@ npm run preview
 ```
 
 If `npm run dev` fails with a Node version error, update Node to a recent version (Vite 8 expects modern Node).
+
+## Backend API expectations
+
+- Base URL defaults to `http://localhost:4000` (override with `VITE_API_BASE_URL`).
+- Demo requests are submitted to `POST /api/request-demo`.
+- The request includes `name`, `email`, `company`, and `message`.
 
 # React + Vite
 
