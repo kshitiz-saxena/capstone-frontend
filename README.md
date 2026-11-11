@@ -29,6 +29,8 @@ If `npm run dev` fails with a Node version error, update Node to a recent versio
 - Base URL defaults to `http://localhost:4000` (override with `VITE_API_BASE_URL`).
 - Demo requests are submitted to `POST /api/request-demo`.
 - The request includes `name`, `email`, `company`, and `message`.
+- Chat requests are submitted to `POST /api/chat` with `Authorization: Bearer <token>`.
+- Chat payload is sent as `multipart/form-data` with `message` and optional `files` uploads.
 
 # React + Vite
 

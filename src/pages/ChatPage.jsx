@@ -2,8 +2,9 @@ import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../config/appConfig'
 import { CHAT_COPY, CHAT_FILE_ACCEPT } from '../config/chatConfig'
-import { generateBotReply, initialMessages, quickPrompts } from '../data/chatData'
+import { initialMessages, quickPrompts } from '../data/chatData'
 import { logoutUser } from '../services/authApi'
+import { sendChatMessage } from '../services/chatApi'
 
 function createUserMessage({ text, files }) {
   return {
@@ -14,11 +15,11 @@ function createUserMessage({ text, files }) {
   }
 }
 
-function createBotMessage(prompt) {
+function createBotMessage(text) {
   return {
     id: Date.now() + 1,
     sender: 'bot',
-    text: generateBotReply(prompt || CHAT_COPY.replyFallbackTopic),
+    text: text || `I can help with ${CHAT_COPY.replyFallbackTopic}. Please share more details.`,
   }
 }
 
@@ -29,7 +30,9 @@ function ChatPage({ user, authToken, onLogout }) {
   const [draft, setDraft] = useState('')
   const [selectedFiles, setSelectedFiles] = useState([])
   const [logoutError, setLogoutError] = useState('')
+  const [chatError, setChatError] = useState('')
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
   const userName = useMemo(
     () => user?.name || CHAT_COPY.fallbackUserName,
@@ -39,6 +42,9 @@ function ChatPage({ user, authToken, onLogout }) {
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files || [])
     setSelectedFiles(files)
+    if (chatError) {
+      setChatError('')
+    }
   }
 
   const handleLogout = async () => {
@@ -61,8 +67,13 @@ function ChatPage({ user, authToken, onLogout }) {
     }
   }
 
-  const handleSend = () => {
+  const handleSend = async () => {
+    if (isSending) {
+      return
+    }
+
     const trimmedMessage = draft.trim()
+    const outboundMessage = trimmedMessage || CHAT_COPY.emptyMessageFallback
 
     if (!trimmedMessage && selectedFiles.length === 0) {
       return
@@ -72,14 +83,28 @@ function ChatPage({ user, authToken, onLogout }) {
       text: trimmedMessage,
       files: selectedFiles,
     })
-    const botMessage = createBotMessage(trimmedMessage)
 
-    setMessages((current) => [...current, userMessage, botMessage])
-    setDraft('')
-    setSelectedFiles([])
+    setIsSending(true)
+    setChatError('')
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+    try {
+      const replyText = await sendChatMessage({
+        token: authToken,
+        message: outboundMessage,
+        files: selectedFiles,
+      })
+      const botMessage = createBotMessage(replyText)
+      setMessages((current) => [...current, userMessage, botMessage])
+      setDraft('')
+      setSelectedFiles([])
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    } catch (error) {
+      setChatError(error.message || CHAT_COPY.chatFailed)
+    } finally {
+      setIsSending(false)
     }
   }
 
@@ -133,6 +158,7 @@ function ChatPage({ user, authToken, onLogout }) {
           </button>
         </header>
         {logoutError && <div className="error-message">{logoutError}</div>}
+        {chatError && <div className="error-message">{chatError}</div>}
 
         <div className="chat-messages">
           {messages.map((message) => (
@@ -162,6 +188,7 @@ function ChatPage({ user, authToken, onLogout }) {
                 multiple
                 accept={CHAT_FILE_ACCEPT}
                 onChange={handleFileChange}
+                disabled={isSending}
               />
               {CHAT_COPY.uploadLabel}
             </label>
@@ -182,9 +209,15 @@ function ChatPage({ user, authToken, onLogout }) {
               onChange={(event) => setDraft(event.target.value)}
               rows="3"
               placeholder={CHAT_COPY.composerPlaceholder}
+              disabled={isSending}
             />
-            <button type="button" className="primary-button send-button" onClick={handleSend}>
-              {CHAT_COPY.sendLabel}
+s            <button
+              type="button"
+              className="primary-button send-button"
+              onClick={handleSend}
+              disabled={isSending}
+            >
+              {isSending ? CHAT_COPY.sendLoadingLabel : CHAT_COPY.sendLabel}
             </button>
           </div>
         </div>
