@@ -11,7 +11,7 @@ export const CHAT_COPY = Object.freeze({
   replyFallbackTopic: 'customs document',
   composerPlaceholder:
     'Ask a question about tariff, customs duty, or uploaded documents...',
-  uploadLabel: 'Upload document',
+  uploadLabel: 'Upload',
   sendLabel: 'Send',
 })
 

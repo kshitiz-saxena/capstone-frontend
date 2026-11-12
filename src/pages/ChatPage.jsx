@@ -180,28 +180,15 @@ function ChatPage({ user, authToken, onLogout }) {
         </div>
 
         <div className="composer">
-          <div className="file-upload-row">
-            <label className="upload-button">
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept={CHAT_FILE_ACCEPT}
-                onChange={handleFileChange}
-                disabled={isSending}
-              />
-              {CHAT_COPY.uploadLabel}
-            </label>
-            {selectedFiles.length > 0 && (
-              <div className="selected-files">
-                {selectedFiles.map((file) => (
-                  <span key={file.name} className="attachment-pill">
-                    {file.name}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+          {selectedFiles.length > 0 && (
+            <div className="selected-files">
+              {selectedFiles.map((file) => (
+                <span key={file.name} className="attachment-pill">
+                  {file.name}
+                </span>
+              ))}
+            </div>
+          )}
 
           <div className="input-row">
             <textarea
@@ -211,14 +198,27 @@ function ChatPage({ user, authToken, onLogout }) {
               placeholder={CHAT_COPY.composerPlaceholder}
               disabled={isSending}
             />
-s            <button
-              type="button"
-              className="primary-button send-button"
-              onClick={handleSend}
-              disabled={isSending}
-            >
-              {isSending ? CHAT_COPY.sendLoadingLabel : CHAT_COPY.sendLabel}
-            </button>
+            <div className="composer-actions">
+              <label className="upload-button">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept={CHAT_FILE_ACCEPT}
+                  onChange={handleFileChange}
+                  disabled={isSending}
+                />
+                {CHAT_COPY.uploadLabel}
+              </label>
+              <button
+                type="button"
+                className="primary-button send-button"
+                onClick={handleSend}
+                disabled={isSending}
+              >
+                {isSending ? CHAT_COPY.sendLoadingLabel : CHAT_COPY.sendLabel}
+              </button>
+            </div>
           </div>
         </div>
       </main>
