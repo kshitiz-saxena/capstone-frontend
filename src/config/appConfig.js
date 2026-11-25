@@ -1,10 +1,6 @@
-const path = require('path');
-require('dotenv').config();
-
 const DEFAULT_API_BASE_URL = 'http://localhost:4000'
 
-export const API_BASE_URL =
-  import.meta.env.API_BASE_URL?.trim() || DEFAULT_API_BASE_URL
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL;
 
 export const ROUTES = Object.freeze({
   home: '/',
