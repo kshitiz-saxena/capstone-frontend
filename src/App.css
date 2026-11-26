@@ -656,9 +656,9 @@
 }
 
 .typing-status {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: #94a3b8;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
 }
 
 .file-upload-row {
