@@ -25,7 +25,7 @@ function HomePage() {
         <div className="brand-wrap">
           <div className="brand-mark">T</div>
           <div>
-            <div className="brand-name">TariffFlow AI</div>
+            <div className="brand-name">Tariffic AI</div>
             <div className="brand-tag">Trade intelligence for business</div>
           </div>
         </div>
@@ -42,7 +42,7 @@ function HomePage() {
           <span className="eyebrow">Smart tariff guidance</span>
           <h1>Understand import costs before every shipment.</h1>
           <p>
-            TariffFlow AI helps businessmen ask trade and customs questions quickly, review
+            Tariffic AI helps businessmen ask trade and customs questions quickly, review
             notice documents, and understand tax exposure without confusion.
           </p>
 

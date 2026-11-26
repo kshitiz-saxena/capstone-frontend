@@ -2,6 +2,7 @@ import { API_BASE_URL } from '../config/appConfig'
 
 const AUTH_ENDPOINTS = Object.freeze({
   login: '/api/auth/login',
+  googleLogin: '/api/auth/google-login',
   logout: '/api/auth/logout',
 })
 
@@ -17,6 +18,13 @@ function getLoginErrorMessage(response, payload) {
   return (
     payload?.message ||
     `Login failed with status ${response.status}. Please try again.`
+  )
+}
+
+function getGoogleLoginErrorMessage(response, payload) {
+  return (
+    payload?.message ||
+    `Google login failed with status ${response.status}. Please try again.`
   )
 }
 
@@ -72,4 +80,25 @@ export async function logoutUser(token) {
         `Logout failed with status ${response.status}. Please try again.`,
     )
   }
+}
+
+export async function loginWithGoogle({ code }) {
+  const { response, payload } = await performAuthRequest({
+    endpoint: AUTH_ENDPOINTS.googleLogin,
+    method: 'POST',
+    body: { code },
+  })
+
+  if (!response.ok) {
+    throw new Error(getGoogleLoginErrorMessage(response, payload))
+  }
+
+  const user = payload?.data?.user
+  const token = payload?.data?.token
+
+  if (!user || !token) {
+    throw new Error('Google login response is missing required user or token data.')
+  }
+
+  return { user, token }
 }

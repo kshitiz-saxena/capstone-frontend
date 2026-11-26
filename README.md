@@ -27,6 +27,8 @@ If `npm run dev` fails with a Node version error, update Node to a recent versio
 ## Backend API expectations
 
 - Base URL defaults to `http://localhost:4000` (override with `VITE_API_BASE_URL`).
+- Google Identity Services client ID must be set with `VITE_GOOGLE_CLIENT_ID`.
+- Google login submits `POST /api/auth/google-login` with `{ "code": "<google_auth_code>" }`.
 - Demo requests are submitted to `POST /api/request-demo`.
 - The request includes `name`, `email`, `company`, and `message`.
 - Chat requests are submitted to `POST /api/chat` with `Authorization: Bearer <token>`.
