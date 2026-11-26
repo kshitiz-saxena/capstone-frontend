@@ -55,7 +55,7 @@ function LoginPage({ onLogin }) {
         <div className="auth-brand-row">
           <div className="brand-mark">T</div>
           <div>
-            <div className="brand-name">TariffFlow AI</div>
+            <div className="brand-name">Tariffic AI</div>
             <div className="brand-tag">Business login</div>
           </div>
         </div>

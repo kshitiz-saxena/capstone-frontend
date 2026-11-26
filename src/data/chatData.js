@@ -1,7 +1,7 @@
 export const quickPrompts = [
-  'What is the tariff for shipping an iPhone from the US to India?',
-  'Can you explain the customs duty on imported handbags?',
-  'Review my customs notice for the latest tax impact.',
+  'What is the tariff percentage of horses for polo?',
+  'What is the HS Code for internal combustion engines (ICE)?',
+  'Which section and chapter of ITC talks about tariff for live animals?',
 ]
 
 export const initialMessages = [
@@ -9,13 +9,7 @@ export const initialMessages = [
     id: 1,
     sender: 'bot',
     text:
-      'Hello! I can help you estimate duties, explain HS code implications, and review customs notices. Ask me about a product, shipping route, or uploaded customs document.',
-  },
-  {
-    id: 2,
-    sender: 'bot',
-    text:
-      'Try asking: “What would be the tariff if I ship an iPhone from the US to India?”',
+      'Hello! I can help you estimate duties, explain HS codes. Ask me about a product\'s tariff or HS code.',
   },
 ]
 

@@ -10,7 +10,7 @@ export const CHAT_COPY = Object.freeze({
   emptyMessageFallback: 'Please review the attached document.',
   replyFallbackTopic: 'customs document',
   composerPlaceholder:
-    'Ask a question about tariff, customs duty, or uploaded documents...',
+    'Ask a question about HS Code or tariff for a product.',
   uploadLabel: 'Upload',
   sendLabel: 'Send',
 })

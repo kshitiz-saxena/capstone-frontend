@@ -1,5 +1,9 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
+import rehypeSanitize from 'rehype-sanitize'
+import remarkGfm from 'remark-gfm'
 import { ROUTES } from '../config/appConfig'
 import { CHAT_COPY, CHAT_FILE_ACCEPT } from '../config/chatConfig'
 import { initialMessages, quickPrompts } from '../data/chatData'
@@ -26,6 +30,7 @@ function createBotMessage(text) {
 function ChatPage({ user, authToken, onLogout }) {
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
+  const latestMessageRef = useRef(null)
   const [messages, setMessages] = useState(initialMessages)
   const [draft, setDraft] = useState('')
   const [selectedFiles, setSelectedFiles] = useState([])
@@ -38,6 +43,13 @@ function ChatPage({ user, authToken, onLogout }) {
     () => user?.name || CHAT_COPY.fallbackUserName,
     [user],
   )
+
+  useEffect(() => {
+    latestMessageRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    })
+  }, [messages])
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files || [])
@@ -83,24 +95,26 @@ function ChatPage({ user, authToken, onLogout }) {
       text: trimmedMessage,
       files: selectedFiles,
     })
+    const filesToSend = selectedFiles
 
     setIsSending(true)
     setChatError('')
+    setMessages((current) => [...current, userMessage])
+    setDraft('')
+    setSelectedFiles([])
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
 
     try {
       const replyText = await sendChatMessage({
         token: authToken,
         message: outboundMessage,
-        files: selectedFiles,
+        files: filesToSend,
       })
       const botMessage = createBotMessage(replyText)
-      setMessages((current) => [...current, userMessage, botMessage])
-      setDraft('')
-      setSelectedFiles([])
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''
-      }
+      setMessages((current) => [...current, botMessage])
     } catch (error) {
       setChatError(error.message || CHAT_COPY.chatFailed)
     } finally {
@@ -114,7 +128,7 @@ function ChatPage({ user, authToken, onLogout }) {
         <div className="sidebar-header">
           <div className="brand-mark">T</div>
           <div>
-            <div className="brand-name">TariffFlow AI</div>
+            <div className="brand-name">Tariffic AI</div>
             <div className="brand-tag">Trade assistant</div>
           </div>
         </div>
@@ -123,7 +137,7 @@ function ChatPage({ user, authToken, onLogout }) {
           <div className="avatar">{userName.charAt(0)}</div>
           <div>
             <strong>{userName}</strong>
-            <span>{user?.company || CHAT_COPY.fallbackCompany}</span>
+            <span>{user?.email || CHAT_COPY.fallbackCompany}</span>
           </div>
         </div>
 
@@ -164,7 +178,18 @@ function ChatPage({ user, authToken, onLogout }) {
           {messages.map((message) => (
             <div key={message.id} className={`message-row ${message.sender}`}>
               <div className="message-bubble">
-                <p>{message.text}</p>
+                {message.sender === 'bot' ? (
+                  <div className="message-markdown">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                    >
+                      {message.text}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <p>{message.text}</p>
+                )}
                 {message.files && message.files.length > 0 && (
                   <div className="attachment-list">
                     {message.files.map((file) => (
@@ -177,9 +202,12 @@ function ChatPage({ user, authToken, onLogout }) {
               </div>
             </div>
           ))}
+          <div ref={latestMessageRef} aria-hidden="true" />
         </div>
 
         <div className="composer">
+          {isSending && <div className="typing-status">typing...</div>}
+
           {selectedFiles.length > 0 && (
             <div className="selected-files">
               {selectedFiles.map((file) => (
@@ -216,7 +244,7 @@ function ChatPage({ user, authToken, onLogout }) {
                 onClick={handleSend}
                 disabled={isSending}
               >
-                {isSending ? CHAT_COPY.sendLoadingLabel : CHAT_COPY.sendLabel}
+                {CHAT_COPY.sendLabel}
               </button>
             </div>
           </div>
